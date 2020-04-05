@@ -1,9 +1,10 @@
 """Platzigram views"""
 #  Django
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 
 #  Utilities
 from datetime import datetime
+import json
 
 
 def hello_world(request):
@@ -12,11 +13,15 @@ def hello_world(request):
     return HttpResponse(f'Hi! The current hour is {now}')
 
 
-def hi(request):
-    """Hi"""
+def sort_integers(request):
+    """Json response with sorted integers"""
     numbers = request.GET['numbers'].split(',')
     numbers = map(lambda number: int(number), numbers)
     numbers = sorted(numbers)
-    return JsonResponse({
-        'numbers': numbers
-    })
+
+    data = {
+        'status': 'ok',
+        'numbers': numbers,
+        'message': 'Integers sorted successfully'
+    }
+    return HttpResponse(json.dumps(data, indent=4), content_type='application/json')
