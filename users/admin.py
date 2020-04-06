@@ -41,10 +41,10 @@ class ProfileAdmin(admin.ModelAdmin):
         ('Metadata', {
             'fields': (
                 ('created', 'updated'),
-            )
+            ),
         })
     )
-    read_only_fields = ('created', 'updated', 'user')
+    readonly_fields = ('created', 'updated', 'user')
 
 
 class ProfileInline(admin.StackedInline):
