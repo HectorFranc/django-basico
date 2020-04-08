@@ -1,6 +1,5 @@
 # Django
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.contrib.auth import views as auth_views
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -22,6 +21,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     slug_field = 'username'
     queryset = User.objects.all()
     context_object_name = 'user'
+    login_url = reverse_lazy('users:login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -30,20 +30,12 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-def login_view(request):
-    """Login view"""
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+class LoginView(auth_views.LoginView):
+    template_name = 'users/login.html'
 
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect('posts:feed')
-        else:
-            return render(request, 'users/login.html', {'error': 'Invalid username or password'})
 
-    return render(request, 'users/login.html')
+class LogoutView(LoginRequiredMixin, auth_views.LogoutView):
+    pass
 
 
 @login_required
@@ -72,6 +64,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'users/update_profile.html'
     model = Profile
     fields = ['website', 'biography', 'phone_number', 'picture']
+    login_url = reverse_lazy('users:login')
 
     def get_object(self):
         return self.request.user.profile
