@@ -7,11 +7,6 @@ from users import views
 
 urlpatterns = [
     path(
-        route='<str:username>',
-        view=views.UserDetailView.as_view(),
-        name='detail',
-    ),
-    path(
         route='login/',
         view=views.login_view,
         name='login'
@@ -25,7 +20,7 @@ urlpatterns = [
 
     path(
         route='signup/',
-        view=views.signup_view,
+        view=views.SignupFormView.as_view(),
         name='signup'
     ),
 
@@ -33,5 +28,11 @@ urlpatterns = [
         route='me/profile/',
         view=views.update_profile,
         name='update'
+    ),
+
+    path(
+        route='<str:username>',
+        view=views.UserDetailView.as_view(),
+        name='detail',
     ),
 ]

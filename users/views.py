@@ -1,9 +1,10 @@
 # Django
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import DetailView
+from django.views.generic import DetailView, FormView
 
 # Forms
 from users.forms import ProfileForm, SignupForm
@@ -50,22 +51,20 @@ def logout_view(request):
     return redirect('users:login')
 
 
-def signup_view(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('users:login')
-    else:
-        form = SignupForm()
+class SignupFormView(FormView):
+    template_name = 'users/signup.html'
+    form_class = SignupForm
+    success_url = reverse_lazy('users:login')
 
-    return render(
-        request=request,
-        template_name='users/signup.html',
-        context={
-            'form': form
-        },
-    )
+    def get_context_object(self, **kwargs):
+        context = super().get_context_object(kwargs)
+        context['user'] = self.request.user
+        context['profile'] = self.request.user.profile
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 @login_required
