@@ -15,11 +15,13 @@
                         <img class="mr-3 rounded-circle" height="35" src="{{ post.profile.picture.url }}" alt="{{ post.user.get_full_name }}">
                     </a>
                     <div class="media-body">
-                        <p style="margin-top: 5px;">{{ post.user.get_full_name  }}</p>
+                        <p style="margin-top: 5px;">{{ post.user.profile.user.get_full_name }}</p>
                     </div>
                 </div>
 
-                <img style="width: 100%;" src="{{ post.photo.url }}" alt="{{ post.title }}">
+                <a href="{% url 'posts:detail' post.pk %}">
+                    <img style="width: 100%;" src="{{ post.photo.url }}" alt="{{ post.title }}">
+                </a>
 
                 <p class="mt-1 ml-2" >
                     <a href="" style="color: #000; font-size: 20px;">
